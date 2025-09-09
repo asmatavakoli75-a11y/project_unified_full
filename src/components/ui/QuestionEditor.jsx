@@ -3,7 +3,7 @@ import Button from './Button';
 import Input from './Input';
 import Select from './Select';
 import Icon from '../AppIcon';
-import Checkbox from './Checkbox';
+import { Checkbox } from './Checkbox';
 
 const QuestionEditor = ({ isOpen, onClose, onSave, question, currentLanguage }) => {
   const [text, setText] = useState('');
