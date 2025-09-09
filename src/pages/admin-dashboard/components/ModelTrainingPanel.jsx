@@ -113,8 +113,10 @@ const ModelTrainingPanel = ({ currentLanguage }) => {
             <div key={alg} className="border rounded p-3">
               <div className="font-semibold mb-1">{alg}</div>
               <div className="text-sm">
-                {Object.entries(obj.splits||{}).map(([sp,m]) => (
-                  <div key={sp}>{sp}: Acc {m?.accuracy is not None and m['accuracy'] or 'N/A'}, AUC {m.get('auc','N/A') if isinstance(m, dict) else 'N/A'}</div>
+                {Object.entries(obj.splits || {}).map(([sp, m]) => (
+                  <div key={sp}>
+                    {sp}: Acc {m?.accuracy ?? 'N/A'}, AUC {(typeof m === 'object' && m !== null) ? (m.auc ?? 'N/A') : 'N/A'}
+                  </div>
                 ))}
                 <div className="mt-1">Avg Acc: {obj?.average_accuracy ?? 'N/A'}, Avg AUC: {obj?.average_auc ?? 'N/A'}</div>
               </div>

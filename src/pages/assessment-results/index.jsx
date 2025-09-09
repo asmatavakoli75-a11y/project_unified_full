@@ -7,6 +7,7 @@ import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import Header from '../../components/ui/Header';
 import Footer from '../../components/ui/Footer';
+import axios from 'axios';
 
 // Import components
 import RiskPredictionPanel from './components/RiskPredictionPanel';
