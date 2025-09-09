@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Input from '../../../components/ui/Input';
 import Button from '../../../components/ui/Button';
-import Checkbox from '../../../components/ui/Checkbox';
+import { Checkbox } from '../../../components/ui/Checkbox';
 import LoadingSpinner from '../../../components/ui/LoadingSpinner';
 import { useToast } from '../../../context/ToastContext';
 
