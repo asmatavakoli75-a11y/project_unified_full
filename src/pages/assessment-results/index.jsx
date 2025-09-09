@@ -107,36 +107,3 @@ const AssessmentResults = () => {
 };
 
 export default AssessmentResults;
-
-/** --- ML Predict Panel (merged) --- */
-import React, { useState } from 'react';
-import axios from 'axios';
-function PredictFromAssessment(){
-  const [assessmentId, setAssessmentId] = useState('');
-  const [result, setResult] = useState(null);
-  const run = async () => {
-    if (!assessmentId) return;
-    const { data } = await axios.post('/api/predict', { assessmentId });
-    setResult(data);
-  };
-  return (
-    <section className="border p-3 my-4">
-      <h3 className="text-lg font-semibold">پیش‌بینی ریسک کمردرد (مدل فعال)</h3>
-      <div className="flex gap-2 my-2">
-        <input className="border p-1" placeholder="Assessment ID" value={assessmentId} onChange={e=>setAssessmentId(e.target.value)} />
-        <button className="border px-3 py-1" onClick={run}>Predict</button>
-      </div>
-      {result && (
-        <div className="text-sm">
-          <div>Model: {result.modelName} (#{result.modelId}) {result.variant ? `— Variant ${result.variant}` : ''}</div>
-          <div>Pred: <strong>{result.pred}</strong> | Proba: <strong>{typeof result.proba==='number'? result.proba.toFixed(3) : result.proba}</strong></div>
-        </div>
-      )}
-    </section>
-  );
-}
-export default function AssessmentResultsMerged(){
-  return (<>
-    <PredictFromAssessment />
-  </>);
-}

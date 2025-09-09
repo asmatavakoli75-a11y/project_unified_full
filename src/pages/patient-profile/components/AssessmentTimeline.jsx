@@ -1,8 +1,3 @@
-import React, { useState, useMemo } from 'react';
-import Icon from '../../../components/AppIcon';
-import Button from '../../../components/ui/Button';
-
-const AssessmentTimeline = ({ assessments, currentLanguage }) => {
 import React, { useState, useMemo, useEffect } from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';

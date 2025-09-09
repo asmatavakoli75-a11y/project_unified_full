@@ -1,8 +1,3 @@
-
-import ABPanel from './components/ABPanel.jsx';
-import BatchPredictPanel from './components/BatchPredictPanel.jsx';
-import ShapToolsPanel from './components/ShapToolsPanel.jsx';
-import ModelRegistry from './components/ModelRegistry.jsx';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers } from '../../store/slices/userSlice';
@@ -24,7 +19,11 @@ import UnivariateAnalysisPanel from './components/UnivariateAnalysisPanel';
 import AdminToolbar from './components/AdminToolbar';
 import AdvancedFilters from './components/AdvancedFilters';
 import SettingsPanel from './components/SettingsPanel';
-import QuestionnaireManager from './components/QuestionnaireManager'; // Import the new component
+import QuestionnaireManager from './components/QuestionnaireManager';
+import ABPanel from './components/ABPanel.jsx';
+import BatchPredictPanel from './components/BatchPredictPanel.jsx';
+import ShapToolsPanel from './components/ShapToolsPanel.jsx';
+import ModelRegistry from './components/ModelRegistry.jsx';
 
 const AdminDashboard = () => {
   const currentLanguage = useLanguage();
@@ -239,7 +238,13 @@ const AdminDashboard = () => {
               )}
 
               {activeView === 'settings' && (
-                <SettingsPanel currentLanguage={currentLanguage} />
+                <div className="space-y-8">
+                  <SettingsPanel currentLanguage={currentLanguage} />
+                  <ABPanel />
+                  <BatchPredictPanel />
+                  <ShapToolsPanel />
+                  <ModelRegistry />
+                </div>
               )}
             </div>
 
@@ -279,8 +284,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-{/* ML Panels (merged) */}
-<ABPanel />
-<BatchPredictPanel />
-<ShapToolsPanel />
-<ModelRegistry />
