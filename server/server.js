@@ -1,21 +1,28 @@
-// Use a fully async startup sequence to guarantee env vars are loaded first.
+import express from 'express';
+import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+import initializeDB from './models/index.js';
 
-async function main() {
-    // --- 1. Load Environment Variables ---
-    const dotenv = await import('dotenv');
-    dotenv.config();
+// Load env vars
+dotenv.config();
 
-    // --- 2. Load Core Dependencies ---
-    const express = (await import('express')).default;
-    const fs = (await import('fs')).default;
-    const path = (await import('path')).default;
+const app = express();
+app.use(express.json());
 
-    // --- 3. Apply Fallbacks ---
+// Determine if the app is installed by checking for the lock file
+const isInstalled = () => {
+    const currentDir = path.dirname(new URL(import.meta.url).pathname);
+    return fs.existsSync(path.join(currentDir, 'installer.lock'));
+};
+
+const startServer = async () => {
+    // Apply Fallbacks
     const FALLBACK_ENV = {
-      PORT: '3001', DB_HOST: '127.0.0.1', DB_USER: 'root',
-      DB_PASSWORD: 'password', DB_NAME: 'clbp_db', DB_PORT: '3306',
-      DB_DIALECT: 'mysql', JWT_SECRET: 'dev-fallback-secret',
-      ADMIN_RESTART_TOKEN: 'dev-restart-key'
+        PORT: '3001', DB_HOST: '127.0.0.1', DB_USER: 'root',
+        DB_PASSWORD: 'password', DB_NAME: 'clbp_db', DB_PORT: '3306',
+        DB_DIALECT: 'mysql', JWT_SECRET: 'dev-fallback-secret',
+        ADMIN_RESTART_TOKEN: 'dev-restart-key'
     };
     for (const [k, v] of Object.entries(FALLBACK_ENV)) {
         if (!process.env[k] || String(process.env[k]).trim() === '') {
@@ -23,34 +30,19 @@ async function main() {
         }
     }
 
-    // --- 4. Initialize Database Connection ---
-    const { connectDB, default: sequelize } = await import('./config/db.js');
-
-    // --- 5. Initialize Express App ---
-    const app = express();
-    app.use(express.json());
-    const port = process.env.PORT || 3001;
-
-    // --- 6. Define Helper and Status Routes ---
-    const isInstalled = () => {
-        const currentDir = path.dirname(new URL(import.meta.url).pathname);
-        return fs.existsSync(path.join(currentDir, 'installer.lock'));
-    };
-
     const installerRoutes = (await import('./routes/installer.js')).default;
     app.use('/api/installer', installerRoutes);
     app.get('/api/status', (req, res) => {
         res.json({ installed: isInstalled() });
     });
 
-    // --- 7. Start Server Logic ---
     if (!isInstalled()) {
         console.log('Application not installed. Running in installer mode.');
     } else {
         try {
             console.log('Application is installed. Starting main server...');
-            await connectDB();
-            await sequelize.sync();
+            const db = await initializeDB();
+            await db.sequelize.sync();
             console.log('Database synchronized.');
 
             // Dynamically import and mount main routes
@@ -81,15 +73,19 @@ async function main() {
         }
     }
 
-    app.listen(port, () => {
+    const port = process.env.PORT || 3001;
+    const server = app.listen(port, () => {
         console.log(`Server running at http://localhost:${port}`);
         if (!isInstalled()) {
             console.log('Navigate to the frontend to begin installation.');
         }
     });
+
+    return server;
+};
+
+if (process.env.NODE_ENV !== 'test') {
+    startServer();
 }
 
-main().catch(error => {
-    console.error("Critical error during server startup:", error);
-    process.exit(1);
-});
+export { app, startServer };
