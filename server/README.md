@@ -6,7 +6,7 @@ This is the backend server for the CLBP Predictive System.
 
 - Node.js
 - npm
-- MySQL
+- MongoDB
 
 ## Setup
 
@@ -18,11 +18,10 @@ This is the backend server for the CLBP Predictive System.
     ```sh
     npm install
     ```
-3.  This project uses a MySQL database. To configure the connection, create a `.env` file in the `server` directory. You can use the `.env.example` file as a template:
-    ```sh
-    cp .env.example .env
+3.  Create a `.env` file in the `server` directory and add your MongoDB connection string:
     ```
-4.  Update the `.env` file with your MySQL database credentials.
+    MONGO_URI=your_mongodb_connection_string
+    ```
 
 ## Running the server
 
