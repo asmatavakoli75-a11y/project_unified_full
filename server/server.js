@@ -23,8 +23,10 @@ async function main() {
         }
     }
 
-    // --- 4. Initialize Database Connection ---
-    const { connectDB, default: sequelize } = await import('./config/db.js');
+    // --- 4. Load Database and Model Initializers ---
+    // We import the functions but DO NOT initialize the connection yet.
+    const { initSequelize, connectDB } = await import('./config/db.js');
+    const initializeDB = (await import('./models/index.js')).default;
 
     // --- 5. Initialize Express App ---
     const app = express();
@@ -49,8 +51,18 @@ async function main() {
     } else {
         try {
             console.log('Application is installed. Starting main server...');
+
+            // 1. Initialize Sequelize with env variables
+            initSequelize();
+
+            // 2. Initialize models and associations
+            const db = initializeDB();
+
+            // 3. Connect to the database
             await connectDB();
-            await sequelize.sync();
+
+            // 4. Sync database schema
+            await db.sequelize.sync();
             console.log('Database synchronized.');
 
             // Dynamically import and mount main routes
