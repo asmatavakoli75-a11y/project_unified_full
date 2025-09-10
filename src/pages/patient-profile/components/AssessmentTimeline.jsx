@@ -30,7 +30,7 @@ const AssessmentTimeline = ({ assessments, currentLanguage }) => {
   }, [selectedAssessmentId, assessments]);
 
   if (!assessments || assessments.length === 0) {
-    // Render a helpful message if there are no assessments to display
+    // If there are no assessments, render a helpful placeholder message.
     return (
       <div className="card-clinical p-6 mb-6 text-center">
         <Icon name="ClipboardList" size={48} className="mx-auto text-muted-foreground" />

@@ -238,6 +238,8 @@ const AdminDashboard = () => {
               )}
 
               {activeView === 'settings' && (
+                // The settings view contains various admin and ML-related panels.
+                // All sibling components are correctly wrapped in this div.
                 <div className="space-y-8">
                   <SettingsPanel currentLanguage={currentLanguage} />
                   <ABPanel />
