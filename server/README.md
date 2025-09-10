@@ -6,7 +6,7 @@ This is the backend server for the CLBP Predictive System. It uses Node.js, Expr
 
 - Node.js
 - npm
-- MySQL Server
+- A running MySQL Server instance
 
 ## Setup
 
@@ -19,12 +19,12 @@ This is the backend server for the CLBP Predictive System. It uses Node.js, Expr
     npm install
     ```
 3.  **Create Environment File:**
-    Create a `.env` file in the `server` directory. You can do this by copying the example file:
+    Create a `.env` file in this `server` directory. You can copy the example file to get started:
     ```sh
     cp .env.example .env
     ```
 4.  **Configure Environment Variables:**
-    Open the newly created `.env` file and update the `DB_` variables to match your local MySQL server configuration.
+    Open the newly created `.env` file and update the `DB_` variables to match your local MySQL server configuration. The server port is also configured here.
     ```
     # Server Configuration
     PORT=5000
@@ -41,12 +41,14 @@ This is the backend server for the CLBP Predictive System. It uses Node.js, Expr
 
 ## Running the server
 
-To start the server with automatic restarts on file changes, run the following command from the `server` directory:
+To start the backend server, run the following command from the `server` directory:
 ```sh
 npm start
 ```
+The server will listen on the port defined in your `.env` file (default is 5000).
 
-Alternatively, to run both the frontend and backend concurrently from the project's root directory, use:
+To run the entire application (frontend and backend), navigate to the **root directory** of the project and run:
 ```sh
 npm run dev
 ```
+This will start the frontend on port 4028 and the backend on port 5000.
