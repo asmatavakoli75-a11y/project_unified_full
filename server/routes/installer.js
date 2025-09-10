@@ -3,7 +3,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import { Sequelize } from 'sequelize';
 import initializeDB from '../models/index.js';
-import { initSequelize } from '../config/db.js';
 
 const router = express.Router();
 
@@ -35,9 +34,7 @@ router.post('/test-db', async (req, res) => {
     await tempSequelize.authenticate();
     res.status(200).json({ message: 'Database connection successful.' });
   } catch (error) {
-    console.error('--- Full DB Connection Test Error ---');
-    console.error(error);
-    console.error('--- End of Error ---');
+    console.error('DB Connection Test Error:', error);
     res.status(400).json({ message: 'Database connection failed.', error: error.message });
   } finally {
     if (tempSequelize) {
@@ -91,12 +88,8 @@ router.post('/create-admin', async (req, res) => {
   }
 
   try {
-    // Since the server has been restarted, we can now initialize the database
-    // with the settings from the newly created .env file.
-    initSequelize();
-
-    // Initialize the models and their associations
-    const db = initializeDB();
+    // Initialize the database and get the models
+    const db = await initializeDB();
     const { User, sequelize } = db;
 
     // 1. Sync database tables to ensure they exist

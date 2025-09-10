@@ -1,61 +1,50 @@
-import { DataTypes } from 'sequelize';
-import { getSequelize } from '../config/db.js';
-
-// Import model definition functions
-import createUserModel from './User.js';
-import createQuestionnaireModel from './Questionnaire.js';
-import createQuestionModel from './Question.js';
-import createAssessmentModel from './Assessment.js';
-import createNoteModel from './Note.js';
-import createSettingModel from './Setting.js';
-import createPredictionModel from './PredictionModel.js';
-import createFeatureFlagModel from './FeatureFlag.js';
+import sequelize from '../config/db.js';
+import User from './User.js';
+import Questionnaire from './Questionnaire.js';
+import Question from './Question.js';
+import Assessment from './Assessment.js';
+import Note from './Note.js';
+import Setting from './Setting.js';
+import PredictionModel from './PredictionModel.js';
+import FeatureFlag from './FeatureFlag.js';
 
 const db = {};
-let initialized = false;
 
-// This function will be called after sequelize is initialized
-const initializeDB = () => {
-  if (initialized) {
-    return db;
-  }
+db.sequelize = sequelize;
+db.User = User;
+db.Questionnaire = Questionnaire;
+db.Question = Question;
+db.Assessment = Assessment;
+db.Note = Note;
+db.Setting = Setting;
+db.FeatureFlag = FeatureFlag;
+db.PredictionModel = PredictionModel;
 
-  const sequelize = getSequelize();
+// Define associations here
 
-  // Initialize models
-  db.User = createUserModel(sequelize, DataTypes);
-  db.Questionnaire = createQuestionnaireModel(sequelize, DataTypes);
-  db.Question = createQuestionModel(sequelize, DataTypes);
-  db.Assessment = createAssessmentModel(sequelize, DataTypes);
-  db.Note = createNoteModel(sequelize, DataTypes);
-  db.Setting = createSettingModel(sequelize, DataTypes);
-  db.FeatureFlag = createFeatureFlagModel(sequelize, DataTypes);
-  db.PredictionModel = createPredictionModel(sequelize, DataTypes);
+// User -> Assessment (One-to-Many)
+// A patient (User) can have multiple assessments.
+db.User.hasMany(db.Assessment, { foreignKey: 'patientId', as: 'assessments' });
+db.Assessment.belongsTo(db.User, { foreignKey: 'patientId', as: 'patient' });
 
-  // Define associations
-  // User -> Assessment
-  db.User.hasMany(db.Assessment, { foreignKey: 'patientId', as: 'assessments' });
-  db.Assessment.belongsTo(db.User, { foreignKey: 'patientId', as: 'patient' });
+// Questionnaire -> Assessment (One-to-Many)
+// A questionnaire can be used in multiple assessments.
+db.Questionnaire.hasMany(db.Assessment, { foreignKey: 'questionnaireId', as: 'assessments' });
+db.Assessment.belongsTo(db.Questionnaire, { foreignKey: 'questionnaireId', as: 'questionnaire' });
 
-  // Questionnaire -> Assessment
-  db.Questionnaire.hasMany(db.Assessment, { foreignKey: 'questionnaireId', as: 'assessments' });
-  db.Assessment.belongsTo(db.Questionnaire, { foreignKey: 'questionnaireId', as: 'questionnaire' });
+// User -> Note (One-to-Many, with two relations)
+// A note has one author and is about one patient.
+db.Note.belongsTo(db.User, { as: 'patient', foreignKey: 'patientId' });
+db.Note.belongsTo(db.User, { as: 'author', foreignKey: 'authorId' });
+// A user can have notes written about them and can be the author of notes.
+db.User.hasMany(db.Note, { as: 'notesAbout', foreignKey: 'patientId' });
+db.User.hasMany(db.Note, { as: 'authoredNotes', foreignKey: 'authorId' });
 
-  // User <-> Note
-  db.Note.belongsTo(db.User, { as: 'patient', foreignKey: 'patientId' });
-  db.Note.belongsTo(db.User, { as: 'author', foreignKey: 'authorId' });
-  db.User.hasMany(db.Note, { as: 'notesAbout', foreignKey: 'patientId' });
-  db.User.hasMany(db.Note, { as: 'authoredNotes', foreignKey: 'authorId' });
+// Questionnaire <-> Question (Many-to-Many)
+// A questionnaire can have many questions, and a question can be in many questionnaires.
+const QuestionnaireQuestion = sequelize.define('QuestionnaireQuestion', {}, { timestamps: false });
+db.Questionnaire.belongsToMany(db.Question, { through: QuestionnaireQuestion });
+db.Question.belongsToMany(db.Questionnaire, { through: QuestionnaireQuestion });
 
-  // Questionnaire <-> Question
-  const QuestionnaireQuestion = sequelize.define('QuestionnaireQuestion', {}, { timestamps: false });
-  db.Questionnaire.belongsToMany(db.Question, { through: QuestionnaireQuestion });
-  db.Question.belongsToMany(db.Questionnaire, { through: QuestionnaireQuestion });
 
-  db.sequelize = sequelize;
-  initialized = true;
-
-  return db;
-};
-
-export default initializeDB;
+export default db;
