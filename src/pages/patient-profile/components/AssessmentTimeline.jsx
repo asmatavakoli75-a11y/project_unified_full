@@ -28,7 +28,7 @@ const AssessmentTimeline = ({ assessments, currentLanguage }) => {
     return assessments.find(a => a._id === selectedAssessmentId);
   }, [selectedAssessmentId, assessments]);
 
-  if (assessments.length === 0) {
+  if (!assessments || assessments.length === 0) {
     return (
       <div className="card-clinical p-6 mb-6 text-center">
         <Icon name="ClipboardList" size={48} className="mx-auto text-muted-foreground" />
