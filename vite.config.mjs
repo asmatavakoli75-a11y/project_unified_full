@@ -24,5 +24,8 @@ export default defineConfig({
         secure: false,
       },
     },
+    watch: {
+      ignored: ['**/server/**'],
+    },
   }
 });
