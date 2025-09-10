@@ -240,10 +240,10 @@ const AdminDashboard = () => {
               {activeView === 'settings' && (
                 <div className="space-y-8">
                   <SettingsPanel currentLanguage={currentLanguage} />
-                  {/* <ABPanel />
+                  <ABPanel />
                   <BatchPredictPanel />
                   <ShapToolsPanel />
-                  <ModelRegistry /> */}
+                  <ModelRegistry />
                 </div>
               )}
             </div>

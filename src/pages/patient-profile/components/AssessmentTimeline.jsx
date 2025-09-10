@@ -6,7 +6,7 @@ useEffect(() => { if (assessments && assessments.length > 0) { setSelectedAssess
 
 const getPhaseIcon = (status) => { switch (status) { case 'completed': return { name: 'CheckCircle', color: 'text-success' }; case 'in-progress': return { name: 'Clock', color: 'text-warning' }; case 'pending': return { name: 'Circle', color: 'text-muted-foreground' }; default: return { name: 'Circle', color: 'text-muted-foreground' }; } };
 
-const selectedAssessment = useMemo(() => { return assessments.find(a => a._id === selectedAssessmentId); }, [selectedAssessmentId, assessments]);
+const selectedAssessment = useMemo(() => { if (!assessments) return null; return assessments.find(a => a._id === selectedAssessmentId); }, [selectedAssessmentId, assessments]);
 
 if (!assessments || assessments.length === 0) { return (
 
