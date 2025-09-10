@@ -9,6 +9,7 @@ async function main() {
     const express = (await import('express')).default;
     const fs = (await import('fs')).default;
     const path = (await import('path')).default;
+    const { fileURLToPath } = await import('url');
 
     // --- 3. Apply Fallbacks ---
     const FALLBACK_ENV = {
@@ -33,8 +34,9 @@ async function main() {
 
     // --- 6. Define Helper and Status Routes ---
     const isInstalled = () => {
-        const currentDir = path.dirname(new URL(import.meta.url).pathname);
-        return fs.existsSync(path.join(currentDir, 'installer.lock'));
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+        return fs.existsSync(path.join(__dirname, 'installer.lock'));
     };
 
     const installerRoutes = (await import('./routes/installer.js')).default;
