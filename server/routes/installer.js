@@ -1,6 +1,7 @@
 import express from 'express';
 import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { Sequelize } from 'sequelize';
 import initializeDB from '../models/index.js';
 
@@ -8,9 +9,11 @@ const router = express.Router();
 
 // Helper function to get the path to the .env file in the server directory
 const getEnvPath = () => {
-  // Using __dirname requires a different setup in ES Modules, so we construct the path manually
-  const currentFilePath = new URL(import.meta.url).pathname;
-  return path.join(path.dirname(currentFilePath), '..', '.env');
+  // Use fileURLToPath to ensure correct path conversion on all platforms, especially Windows
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  // Navigate up from /routes to /server to find the target .env path
+  return path.join(__dirname, '..', '.env');
 };
 
 // @desc    Test MySQL database connection
