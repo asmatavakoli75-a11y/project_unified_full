@@ -1,19 +1,17 @@
 // Use a fully async startup sequence to guarantee env vars are loaded first.
 
 async function main() {
-    // --- 1. Load Environment Variables ---
+    // --- 1. Load Core Dependencies & Env Vars ---
     const dotenv = await import('dotenv');
-    const path = (await import('path')).default;
-    const { fileURLToPath } = await import('url');
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    dotenv.config({ path: path.join(__dirname, '.env') });
-
-    // --- 2. Load Core Dependencies ---
     const express = (await import('express')).default;
     const fs = (await import('fs')).default;
     const path = (await import('path')).default;
     const { fileURLToPath } = await import('url');
+
+    // --- 2. Configure Environment ---
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    dotenv.config({ path: path.join(__dirname, '.env') });
 
     // --- 3. Apply Fallbacks ---
     const FALLBACK_ENV = {
