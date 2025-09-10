@@ -30,7 +30,7 @@ async function main() {
     // --- 5. Initialize Express App ---
     const app = express();
     app.use(express.json());
-    const port = process.env.PORT || 3001;
+    const port = 5000; // process.env.PORT || 3001;
 
     // --- 6. Define Helper and Status Routes ---
     const isInstalled = () => {
