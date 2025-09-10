@@ -20,10 +20,11 @@ const getEnvPath = () => {
 // @route   POST /api/installer/test-db
 // @access  Public
 router.post('/test-db', async (req, res) => {
-  const { dbHost, dbUser, dbPassword, dbName, dbPort } = req.body;
+  const { dbHost, dbUser, dbPassword, dbName } = req.body;
+  const dbPort = 3306; // Hardcode DB port to avoid user error
 
-  if (!dbHost || !dbUser || !dbName || !dbPort) {
-    return res.status(400).json({ message: 'All database connection fields are required.' });
+  if (!dbHost || !dbUser || !dbName) {
+    return res.status(400).json({ message: 'All database connection fields (except port) are required.' });
   }
 
   let tempSequelize;
@@ -67,7 +68,7 @@ DB_HOST=${dbHost}
 DB_USER=${dbUser}
 DB_PASSWORD=${dbPassword}
 DB_NAME=${dbName}
-DB_PORT=${dbPort}
+DB_PORT=3306
 DB_DIALECT=mysql
 `;
 
