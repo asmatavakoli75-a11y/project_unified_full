@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { Sequelize } from 'sequelize';
 import initializeDB from '../models/index.js';
+import { initSequelize } from '../config/db.js';
 
 const router = express.Router();
 
@@ -88,8 +89,12 @@ router.post('/create-admin', async (req, res) => {
   }
 
   try {
-    // Initialize the database and get the models
-    const db = await initializeDB();
+    // Since the server has been restarted, we can now initialize the database
+    // with the settings from the newly created .env file.
+    initSequelize();
+
+    // Initialize the models and their associations
+    const db = initializeDB();
     const { User, sequelize } = db;
 
     // 1. Sync database tables to ensure they exist
