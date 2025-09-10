@@ -2,9 +2,8 @@ import express from 'express';
 import fs from 'fs/promises';
 import path from 'path';
 import { Sequelize } from 'sequelize';
-import db from '../models/index.js';
+import initializeDB from '../models/index.js';
 
-const { User, sequelize } = db;
 const router = express.Router();
 
 // Helper function to get the path to the .env file in the server directory
@@ -89,6 +88,10 @@ router.post('/create-admin', async (req, res) => {
   }
 
   try {
+    // Initialize the database and get the models
+    const db = await initializeDB();
+    const { User, sequelize } = db;
+
     // 1. Sync database tables to ensure they exist
     await sequelize.sync();
 
