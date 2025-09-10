@@ -3,7 +3,11 @@
 async function main() {
     // --- 1. Load Environment Variables ---
     const dotenv = await import('dotenv');
-    dotenv.config();
+    const path = (await import('path')).default;
+    const { fileURLToPath } = await import('url');
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    dotenv.config({ path: path.join(__dirname, '.env') });
 
     // --- 2. Load Core Dependencies ---
     const express = (await import('express')).default;
@@ -30,7 +34,7 @@ async function main() {
     // --- 5. Initialize Express App ---
     const app = express();
     app.use(express.json());
-    const port = 5000; // process.env.PORT || 3001;
+    const port = process.env.PORT || 3001;
 
     // --- 6. Define Helper and Status Routes ---
     const isInstalled = () => {
