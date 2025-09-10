@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Sequelize } from 'sequelize';
-import initializeDB from '../models/index.js';
+import db from '../models/index.js';
 
 const router = express.Router();
 
@@ -91,12 +91,12 @@ router.post('/create-admin', async (req, res) => {
   }
 
   try {
-    // Initialize the database and get the models
-    const db = await initializeDB();
+    // The db object is now correctly imported.
     const { User, sequelize } = db;
 
     // 1. Sync database tables to ensure they exist
-    await sequelize.sync();
+    // Using { force: true } ensures a clean install by dropping existing tables.
+    await sequelize.sync({ force: true });
 
     // 2. Check if an admin already exists
     const adminExists = await User.findOne({ where: { role: 'admin' } });
