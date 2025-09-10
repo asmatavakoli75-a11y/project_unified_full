@@ -35,7 +35,9 @@ router.post('/test-db', async (req, res) => {
     await tempSequelize.authenticate();
     res.status(200).json({ message: 'Database connection successful.' });
   } catch (error) {
-    console.error('DB Connection Test Error:', error);
+    console.error('--- Full DB Connection Test Error ---');
+    console.error(error);
+    console.error('--- End of Error ---');
     res.status(400).json({ message: 'Database connection failed.', error: error.message });
   } finally {
     if (tempSequelize) {
