@@ -1,5 +1,7 @@
 {
   "watch": ["*.js", "routes", "models", "config", "controllers"],
   "ext": "js,json",
-  "ignore": []
+  "ignore": [
+    "installer.lock"
+  ]
 }
