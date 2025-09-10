@@ -58,7 +58,7 @@ router.post('/write-config', async (req, res) => {
 
   const envContent = `
 # Server Configuration
-PORT=3001
+PORT=5000
 JWT_SECRET=${jwtSecret}
 ADMIN_RESTART_TOKEN=dev-restart-key
 
